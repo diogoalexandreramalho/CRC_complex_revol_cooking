@@ -35,6 +35,45 @@ for country in data:
             graph.add_edge(n1,n2,attr=country)
 nx.write_gexf(graph, "graph.gexf")
 
+
+
+# -----------------------------------------------
+#
+#           Functions
+#
+# -----------------------------------------------
+
+
+def get_total_number_of_attacks():
+    sum = 0
+    for country in data:
+        for value in data[country]:
+            sum += value
+    return sum
+    
+
+def get_number_of_attacks_per_country():
+    countries = {}
+    
+    for country in data:
+        countries[country] = 0
+        for num in data[country]:
+            countries[country] += num
+    
+    return countries
+
+
+def get_number_of_attacks_per_organization():
+    organizations = {}
+    for row in list(data.index.values):
+        organizations[row] = 0
+        for attack in data.loc[row]:
+            if attack == 1:
+                organizations[row] += 1
+    return organizations
+
+
+
 # -----------------------------------------------
 #
 #			Additional Calculations
@@ -50,6 +89,7 @@ avgDegree = (2 * numEdges) / numNodes
 dgDistribution = []
 for node in graph.nodes():
 	dgDistribution.append(graph.degree(node))
+
 #averages array is created for plotting
 degrees = Counter(dgDistribution)
 averages = []
