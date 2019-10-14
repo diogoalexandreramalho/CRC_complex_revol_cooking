@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
+from collections import Counter
 
 #TODO: Make graph creation optional
 
@@ -50,31 +51,11 @@ dgDistribution = []
 for node in graph.nodes():
 	dgDistribution.append(graph.degree(node))
 
-sortedDegrees = list(np.sort(dgDistribution))
-degrees = {}
-current = -1
-
-#Sort array, pop each element and update frequency when element changes
-for i in range(len(sortedDegrees)):
-	el = sortedDegrees.pop()
-	if (el != current):
-		if (current != -1):
-			degrees[current] = numCurrent / numNodes
-		current = el
-		numCurrent = 1
-	else:
-		numCurrent += 1
-total = 0
-averages = []
-
-#Process doesn't add 0s for some reason, add manually
-for el in degrees:
-	total += degrees[el]
-	averages.append(degrees[el])
-if (total != 1):
-	degrees[0] = 1 - total
-	averages.append(degrees[0])
-
 #averages array is created for plotting
+degrees = Counter(dgDistribution)
+averages = []
+for el in degrees:
+	averages.append(degrees[el] / numNodes)
+
 plt.scatter(list(degrees), averages)
 plt.show()
