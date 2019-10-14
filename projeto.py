@@ -7,8 +7,8 @@ from collections import Counter
 
 #TODO: Make graph creation optional
 
-data=pd.read_csv("BAAD.csv",sep=',',index_col=0)
-graph = nx.Graph() 
+data=pd.read_csv("../BAAD.csv",sep=',',index_col=0)
+graph = nx.Graph()
 dic={}
 c=0
 
@@ -50,7 +50,6 @@ avgDegree = (2 * numEdges) / numNodes
 dgDistribution = []
 for node in graph.nodes():
 	dgDistribution.append(graph.degree(node))
-
 #averages array is created for plotting
 degrees = Counter(dgDistribution)
 averages = []
@@ -59,3 +58,12 @@ for el in degrees:
 
 plt.scatter(list(degrees), averages)
 plt.show()
+
+a=list(nx.strongly_connected_components(graph.to_directed()))
+print(len(a))
+c=0
+
+for i in list(a):
+    print(c,"->",len(i))
+    c+=1
+
