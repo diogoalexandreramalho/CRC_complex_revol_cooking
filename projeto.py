@@ -4,6 +4,7 @@ import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
 from collections import Counter
+import powerlaw
 
 #TODO: Make graph creation optional
 
@@ -94,16 +95,40 @@ for node in graph.nodes():
 degrees = Counter(dgDistribution)
 averages = []
 for el in degrees:
-	averages.append(degrees[el] / numNodes)
-
+    averages.append(degrees[el] / numNodes)
+plt.subplot(2, 2, 1)
 plt.scatter(list(degrees), averages)
-plt.show()
-
+plt.subplot(2, 2, 2)
 a=list(nx.strongly_connected_components(graph.to_directed()))
 print(len(a))
-c=0
 
+sizeComponents=[]
 for i in list(a):
-    print(c,"->",len(i))
-    c+=1
+    sizeComponents+=[len(i)]
+
+numComponents=len(sizeComponents)
+print(sizeComponents)
+fit = powerlaw.Fit(np.array(sizeComponents)+1,xmin=1,xmax=72,discrete=True)
+fit.power_law.plot_pdf( color= 'b',linestyle='--',label='fit ccdf')
+
+print('alpha= ',fit.power_law.alpha,'  sigma= ',fit.power_law.sigma)
+
+
+sizeComponents= Counter(sizeComponents)
+
+averages=[] 
+for el in sizeComponents:
+    averages.append(sizeComponents[el] / numComponents)
+
+
+
+
+
+plt.scatter(list(sizeComponents),averages)
+plt.subplot(2,2,3)
+plt.scatter(list(sizeComponents),averages)
+plt.show()
+
+
+
 
