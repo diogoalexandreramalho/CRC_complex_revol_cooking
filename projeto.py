@@ -82,32 +82,69 @@ def get_number_of_attacks_per_organization():
 # -----------------------------------------------
 
 #Nodes, Edges and Average Degree
-numNodes = len(graph.nodes())
-numEdges = len(graph.edges())
-avgDegree = (2 * numEdges) / numNodes
+def getAvgDegree():
+    numNodes = len(graph.nodes())
+    numEdges = len(graph.edges())
+    avgDegree = (2 * numEdges) / numNodes
+    return avgDegree
 
-#Degree Distribution
-dgDistribution = []
-for node in graph.nodes():
-	dgDistribution.append(graph.degree(node))
+def degreeDistribution():
+    dgDistribution = []
+    numNodes = len(graph.nodes())
 
-#averages array is created for plotting
-degrees = Counter(dgDistribution)
-averages = []
-for el in degrees:
-    averages.append(degrees[el] / numNodes)
-plt.subplot(2, 2, 1)
-plt.scatter(list(degrees), averages)
-plt.subplot(2, 2, 2)
+    for node in graph.nodes():
+    	dgDistribution.append(graph.degree(node))
+
+    #averages array is created for plotting
+    degrees = Counter(dgDistribution)
+    averages = []
+
+    for el in degrees:
+        averages.append(degrees[el] / numNodes)
+
+    plt.title('Degree Distribution')
+    plt.ylabel('Relative Frequencies')
+    plt.xlabel('Degree')
+    plt.scatter(list(degrees), averages)
+    plt.show()
+
+
+def getNumberOfStronglyConnectedComponents():
+    a=list(nx.strongly_connected_components(graph.to_directed()))
+    return len(a)
+    
+def getAveragePathLength():
+    for scc in nx.connected_component_subgraphs(graph):
+        print(nx.average_shortest_path_length(scc))
+
 a=list(nx.strongly_connected_components(graph.to_directed()))
-print(len(a))
 
+#getAveragePathLength()
+for scc in nx.connected_component_subgraphs(graph):
+    print(scc)
+
+# proves that all organizations attack once
+def allOrganizationsAttackOnce():
+    sum = 0
+    organizations = get_number_of_attacks_per_organization()
+    for org in organizations:
+        if organizations[org] == 1:
+            sum += organizations[org]
+        else:
+            print(org)
+    return sum 
+
+
+"""
 sizeComponents=[]
 for i in list(a):
     sizeComponents+=[len(i)]
 
+
 numComponents=len(sizeComponents)
-print(sizeComponents)
+
+
+
 fit = powerlaw.Fit(np.array(sizeComponents)+1,xmin=1,xmax=72,discrete=True)
 fit.power_law.plot_pdf( color= 'b',linestyle='--',label='fit ccdf')
 
@@ -125,9 +162,7 @@ for el in sizeComponents:
 
 
 plt.scatter(list(sizeComponents),averages)
-plt.subplot(2,2,3)
-plt.scatter(list(sizeComponents),averages)
-plt.show()
+plt.show()"""
 
 
 
