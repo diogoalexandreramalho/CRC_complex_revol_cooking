@@ -113,15 +113,11 @@ def getNumberOfStronglyConnectedComponents():
     a=list(nx.strongly_connected_components(graph.to_directed()))
     return len(a)
     
+
 def getAveragePathLength():
     for scc in nx.connected_component_subgraphs(graph):
         print(nx.average_shortest_path_length(scc))
 
-a=list(nx.strongly_connected_components(graph.to_directed()))
-
-#getAveragePathLength()
-for scc in nx.connected_component_subgraphs(graph):
-    print(scc)
 
 # proves that all organizations attack once
 def allOrganizationsAttackOnce():
@@ -135,7 +131,16 @@ def allOrganizationsAttackOnce():
     return sum 
 
 
+def clusteringCoefficient():
+    print(nx.average_clustering(graph))
+
+
+clusteringCoefficient()
+
+
 """
+a=list(nx.strongly_connected_components(graph.to_directed()))
+
 sizeComponents=[]
 for i in list(a):
     sizeComponents+=[len(i)]
