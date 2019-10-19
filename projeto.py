@@ -105,9 +105,6 @@ def allOrganizationsAttackOnce():
     return sum 
 
 
-def getNumberOfStronglyConnectedComponents():
-    a=list(nx.strongly_connected_components(graph.to_directed()))
-    return len(a)
 
 
 # -----------------------------------------------
@@ -167,7 +164,7 @@ def getAveragePathLength():
         else:
             sum0 += 1
     
-    print("Number of average path length equal to 0: {}\nNumber of average path length equal to 1: {}".format(sum0, sum1))
+    print("Number of SCC with average path length equal to 0: {}\nNumber of SCC with average path length equal to 1: {}".format(sum0, sum1))
 
 
 
@@ -184,25 +181,43 @@ def clusteringCoefficientForNode():
     sum0 = 0
     dic = nx.clustering(graph)
 
-    lst = [] #organizations with 0 clustering coefficient
     for org in dic:
         if dic[org] == 1:
             sum1 += 1
         else:
-            lst += [org]
             sum0 += 1 
+    
+    print("Nodes with clustering coefficient of 0: {}\nNodes with clustering coefficient of 1: {}".format(sum0, sum1))
+
+
+def checkOrgsWithZeroClusteringCoef():
+    dic = nx.clustering(graph)
+
+    # organizations with 0 clustering coefficient
+    lst = [] 
+
+    for org in dic:
+        if dic[org] == 0:
+            lst += [org]
     
     locations_lst = locationsAttackedNTimes([1,2])
     country_orgs_dic = getOrganizationsThatAttackedInACountry()
+    
+    # organizations that attacked in countries that were attacked only once or twice
     lst_2 = []
 
     for location in locations_lst:
         lst_2 += country_orgs_dic[location]
-    
-    #print(len(lst_2))
-    #print(lst_2 == lst)
-    
-    print("Nodes with clustering coefficient of 0: {}\nNodes with clustering coefficient of 1: {}".format(sum0, sum1))
+    lst.sort()
+    lst_2.sort()
+
+    if lst == lst_2:
+        print("Nodes with clustering coefficient equal to 0 are the organizations that attacked in countries that were attacked in total either once or twice")
+
+
+# -------------------------------------
+#    Strongly Connected Components
+# -------------------------------------
 
 def stronglyConnectedComponents():
     a=list(nx.strongly_connected_components(graph.to_directed()))
@@ -223,13 +238,31 @@ def stronglyConnectedComponents():
     plt.xlabel('Size of Components')
     plt.show()
 
-def printStats():
-	print("Number of Nodes:", len(graph.nodes()))
-	print("Number of Edges:", len(graph.edges()))
-	print("Number of Strongly Connected Components:", getNumberOfStronglyConnectedComponents())
-	getAvgDegree()
 
-printStats()
+def getNumberOfStronglyConnectedComponents():
+    a=list(nx.strongly_connected_components(graph.to_directed()))
+    print("Number of Strongly Connected Components:", len(a))
+
+
+
+# -----------------------------------------------
+#
+#			    Print Results
+#
+# -----------------------------------------------
+
+
+print("Number of Nodes:", len(graph.nodes()))
+print("Number of Edges:", len(graph.edges()))
+getAvgDegree()
+getAveragePathLength()
+clusteringCoefficient()
 clusteringCoefficientForNode()
-stronglyConnectedComponents()
+getNumberOfStronglyConnectedComponents()
+print()
+plot = input("Choose the plot you want to see:\n\t1 - Degree Distribution\n\t2 - Strongly Connected Components\n Choice: ")
+if plot == "1":
+    degreeDistribution()
+else:
+    stronglyConnectedComponents()
 
