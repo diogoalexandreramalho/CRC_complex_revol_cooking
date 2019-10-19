@@ -204,42 +204,26 @@ def clusteringCoefficientForNode():
     
     print("Nodes with clustering coefficient of 0: {}\nNodes with clustering coefficient of 1: {}".format(sum0, sum1))
 
+def stronglyConnectedComponents():
+    a=list(nx.strongly_connected_components(graph.to_directed()))
+    sizeComponents=[]
+    for i in list(a):
+        sizeComponents+=[len(i)]
+    numComponents=len(sizeComponents)
+    fit = powerlaw.Fit(np.array(sizeComponents)+1,xmin=1,xmax=72,discrete=True)
+    fit.power_law.plot_pdf( color= 'b',linestyle='--',label='fit ccdf')
+    print('alpha= ',fit.power_law.alpha,'  sigma= ',fit.power_law.sigma)
+    sizeComponents= Counter(sizeComponents)
+    averages=[] 
+    for el in sizeComponents:
+        averages.append(sizeComponents[el] / numComponents)
+    plt.scatter(list(sizeComponents),averages)
+    plt.title('Strongly Connected Components Distribution')
+    plt.ylabel('Relative Frequencies')
+    plt.xlabel('Size of Components')
+    plt.show()
 
 
 clusteringCoefficientForNode()
-
-
-"""
-a=list(nx.strongly_connected_components(graph.to_directed()))
-
-sizeComponents=[]
-for i in list(a):
-    sizeComponents+=[len(i)]
-
-
-numComponents=len(sizeComponents)
-
-
-
-fit = powerlaw.Fit(np.array(sizeComponents)+1,xmin=1,xmax=72,discrete=True)
-fit.power_law.plot_pdf( color= 'b',linestyle='--',label='fit ccdf')
-
-print('alpha= ',fit.power_law.alpha,'  sigma= ',fit.power_law.sigma)
-
-
-sizeComponents= Counter(sizeComponents)
-
-averages=[] 
-for el in sizeComponents:
-    averages.append(sizeComponents[el] / numComponents)
-
-
-
-
-
-plt.scatter(list(sizeComponents),averages)
-plt.show()"""
-
-
-
+stronglyConnectedComponents()
 
