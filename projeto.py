@@ -40,7 +40,7 @@ nx.write_gexf(graph, "graph.gexf")
 
 # -----------------------------------------------
 #
-#           Functions
+#           Support Functions
 #
 # -----------------------------------------------
 
@@ -64,6 +64,14 @@ def get_number_of_attacks_per_country():
     return countries
 
 
+def getOrganizationsThatAttackedInACountry():
+    country_org_dic = {}
+    for country in data:
+        country_org_dic[country] = data.index[data[country] == 1].tolist()
+    
+    return country_org_dic
+
+
 def get_number_of_attacks_per_organization():
     organizations = {}
     for row in list(data.index.values):
@@ -74,6 +82,33 @@ def get_number_of_attacks_per_organization():
     return organizations
 
 
+# shows number of locations that were attacked only once
+def locationsAttackedNTimes(lst_numbers):
+    countries = get_number_of_attacks_per_country()
+    lst = []
+    
+    for country in countries:
+        if countries[country] in lst_numbers:
+            lst += [country]
+
+    return lst
+
+# proves that all organizations attack once
+def allOrganizationsAttackOnce():
+    sum = 0
+    organizations = get_number_of_attacks_per_organization()
+    for org in organizations:
+        if organizations[org] == 1:
+            sum += organizations[org]
+        else:
+            print(org)
+    return sum 
+
+
+def getNumberOfStronglyConnectedComponents():
+    a=list(nx.strongly_connected_components(graph.to_directed()))
+    return len(a)
+
 
 # -----------------------------------------------
 #
@@ -81,12 +116,22 @@ def get_number_of_attacks_per_organization():
 #
 # -----------------------------------------------
 
+
+# -------------------------------------
+#			Average Degree
+# -------------------------------------
+
 #Nodes, Edges and Average Degree
 def getAvgDegree():
     numNodes = len(graph.nodes())
     numEdges = len(graph.edges())
     avgDegree = (2 * numEdges) / numNodes
-    return avgDegree
+    print("Average degree: {}".format(avgDegree))
+
+
+# -------------------------------------
+#		  Degree Distribution
+# -------------------------------------
 
 def degreeDistribution():
     dgDistribution = []
@@ -109,33 +154,59 @@ def degreeDistribution():
     plt.show()
 
 
-def getNumberOfStronglyConnectedComponents():
-    a=list(nx.strongly_connected_components(graph.to_directed()))
-    return len(a)
-    
+# -------------------------------------
+#		  Average Path Length
+# -------------------------------------    
 
 def getAveragePathLength():
+    sum1 = 0
+    sum0 = 0
     for scc in nx.connected_component_subgraphs(graph):
-        print(nx.average_shortest_path_length(scc))
-
-
-# proves that all organizations attack once
-def allOrganizationsAttackOnce():
-    sum = 0
-    organizations = get_number_of_attacks_per_organization()
-    for org in organizations:
-        if organizations[org] == 1:
-            sum += organizations[org]
+        if nx.average_shortest_path_length(scc) == 1:
+            sum1 += 1
         else:
-            print(org)
-    return sum 
+            sum0 += 1
+    
+    print("Number of average path length equal to 0: {}\nNumber of average path length equal to 1: {}".format(sum0, sum1))
 
+
+
+# -------------------------------------
+#		  Clustering Coefficient
+# -------------------------------------
 
 def clusteringCoefficient():
-    print(nx.average_clustering(graph))
+    print("Clustering Coefficient = {}".format(nx.average_clustering(graph)))
 
 
-clusteringCoefficient()
+def clusteringCoefficientForNode():
+    sum1 = 0
+    sum0 = 0
+    dic = nx.clustering(graph)
+
+    lst = [] #organizations with 0 clustering coefficient
+    for org in dic:
+        if dic[org] == 1:
+            sum1 += 1
+        else:
+            lst += [org]
+            sum0 += 1 
+    
+    locations_lst = locationsAttackedNTimes([1,2])
+    country_orgs_dic = getOrganizationsThatAttackedInACountry()
+    lst_2 = []
+
+    for location in locations_lst:
+        lst_2 += country_orgs_dic[location]
+    
+    print(len(lst_2))
+    print(lst_2 == lst)
+    
+    print("Nodes with clustering coefficient of 0: {}\nNodes with clustering coefficient of 1: {}".format(sum0, sum1))
+
+
+
+clusteringCoefficientForNode()
 
 
 """
