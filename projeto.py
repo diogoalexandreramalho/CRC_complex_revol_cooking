@@ -8,7 +8,7 @@ import powerlaw
 
 #TODO: Make graph creation optional
 
-data=pd.read_csv("../BAAD.csv",sep=',',index_col=0)
+data=pd.read_csv("BAAD.csv",sep=',',index_col=0)
 graph = nx.Graph()
 dic={}
 c=0
@@ -199,8 +199,8 @@ def clusteringCoefficientForNode():
     for location in locations_lst:
         lst_2 += country_orgs_dic[location]
     
-    print(len(lst_2))
-    print(lst_2 == lst)
+    #print(len(lst_2))
+    #print(lst_2 == lst)
     
     print("Nodes with clustering coefficient of 0: {}\nNodes with clustering coefficient of 1: {}".format(sum0, sum1))
 
@@ -223,7 +223,13 @@ def stronglyConnectedComponents():
     plt.xlabel('Size of Components')
     plt.show()
 
+def printStats():
+	print("Number of Nodes:", len(graph.nodes()))
+	print("Number of Edges:", len(graph.edges()))
+	print("Number of Strongly Connected Components:", getNumberOfStronglyConnectedComponents())
+	getAvgDegree()
 
+printStats()
 clusteringCoefficientForNode()
 stronglyConnectedComponents()
 
