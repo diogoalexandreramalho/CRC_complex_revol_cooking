@@ -2,10 +2,11 @@ import random
 import matplotlib.pyplot as plt
 import os
 import sys
+
 def main():
-    neighbors=[4,8,16,32]
-    ps=[0,0,0,0]
-    qs=[0,0,0,0]
+    neighbors=[100]
+    ps=[0 for i in range(len(neighbors))]
+    qs=[0 for i in range(len(neighbors))]
     finished=0
     for i in range(len(neighbors)):
         try:
@@ -13,9 +14,8 @@ def main():
         except OSError:
             exit("Could not create a child process")
         if newpid==0:
-            args=[sys.executable,"/mnt/c/Users/andre/OneDrive/Tecnico/CRC/CRC_complex_revol_cooking/projeto2paper/neighbor_run.py",str(neighbors[i])]
+            args=[sys.executable,"/mnt/c/Users/andre/OneDrive/Tecnico/CRC/CRC_complex_revol_cooking/projeto2paper/ring_run.py",str(neighbors[i])]
             os.execv(sys.executable,args)
-            exit()
     while finished!=len(neighbors):
         f=os.waitpid(0,0)
         if f[1]==0:
