@@ -13,7 +13,7 @@ class Population:
         self.population+=[Player(p,q)]
 
     def addRobot(self,p,q):
-        self.population+=[Robot(p,q)]
+        self.population[int(random.random()*len(self.population))]=Robot(p,q)
 
     def createNetworkRing(self,number):
         for i in range(len(self.population)):
@@ -41,10 +41,13 @@ class Population:
     def media(self):
         p=0
         q=0
+        c=0
         for i in self.population:
-            p+=i.p
-            q+=i.q
-        return (p/len(self.population),q/(len(self.population)))
+            if i.isRobot==False:
+                p+=i.p
+                q+=i.q
+                c+=1
+        return (p/c,q/c)
 
     def make_graph(self):
         ps=[]

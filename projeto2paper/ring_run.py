@@ -25,20 +25,20 @@ def one_run(population,iterations):
             mediaq+=m[1]
     
     #make_graph(population)
-    plt.subplot(2, 1, 1)
+    '''plt.subplot(2, 1, 1)
     plt.scatter(list(range(len(mediasp))),mediasp)
     plt.title('Ps')
     plt.subplot(2, 1, 2)
     plt.scatter(list(range(len(mediasq))),mediasq,c='orange')
     plt.title('Qs')
-    plt.show()
+    plt.show()'''
     return (mediap/(100),mediaq/(100))
 
 def main(argv):
     n=101
     e=0.001
     iterations=800000
-    neighborIterations=3
+    neighborIterations=1
     pm=0
     qm=0
     neighbors=int(argv[0])
