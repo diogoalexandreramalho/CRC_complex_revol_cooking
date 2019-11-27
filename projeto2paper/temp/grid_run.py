@@ -17,6 +17,8 @@ def one_run(population,iterations):
 	#Make sure population size is a square number
     side_size = math.floor(math.sqrt(population.size))
     fitnessMatrix = np.zeros((side_size, side_size))
+    qMatrix = np.zeros((side_size, side_size))
+    pMatrix = np.zeros((side_size, side_size))
     for t in range(iterations):
         p1=population.randomPlayer()
         tag = p1.tag
@@ -35,10 +37,22 @@ def one_run(population,iterations):
             mediap+=m[0]
             mediaq+=m[1]
         if t % 400 == 0:
-            print("Saving frame at", t)
+            for player in population.population:
+                tag = player.tag
+                i = math.floor(tag / side_size)
+                j = tag % side_size
+                qMatrix[i, j] = player.q
+                pMatrix[i, j] = player.p
+            print("Saving frames at", t)
             pylab.imshow(fitnessMatrix, interpolation='nearest', cmap=cm.Blues, vmin=0, vmax=4.1)
             pylab.axis('off')
-            pylab.savefig('Frames/frame' + str(imtag), bbox_inches='tight')
+            pylab.savefig('FramesFitness/frame' + str(imtag), bbox_inches='tight')
+            pylab.imshow(qMatrix, interpolation='nearest', cmap=cm.Reds, vmin=0, vmax=1)
+            pylab.axis('off')
+            pylab.savefig('FramesQ/frame' + str(imtag), bbox_inches='tight')
+            pylab.imshow(pMatrix, interpolation='nearest', cmap=cm.Greens, vmin=0, vmax=1)
+            pylab.axis('off')
+            pylab.savefig('FramesP/frame' + str(imtag), bbox_inches='tight')
             imtag += 1
     
     #make_graph(population)
