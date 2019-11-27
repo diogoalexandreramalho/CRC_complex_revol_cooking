@@ -1,11 +1,11 @@
 import random
 import matplotlib.pyplot as plt
-import sys
+import sys,getopt
 from player import Player
 from player import Robot
 from population import Population
 
-def one_run(population, iterations, hasRobots):
+def one_run(population, iterations, neighborIterations):
     mediasp=[]
     mediasq=[]
     mediap=0
@@ -18,77 +18,66 @@ def one_run(population, iterations, hasRobots):
         f2=population.getFitness(p2)
         if f2>f1:
             population.imitate(p1,p2)
-        if hasRobots and t>= (iterations-nmedia):
-            m = population.media()
-            mediap += m[0]
-            mediaq += m[1]
-        #m=population.media()  
-        #mediasp+=[m[0]]
-        #mediasq+=[m[1]]
-        if t>=(iterations-100) and not hasRobots:
-            m=population.media()
-            mediap+=m[0]
-            mediaq+=m[1]
-    
-    #make_graph(population)
-    '''plt.subplot(2, 1, 1)
-    plt.scatter(list(range(len(mediasp))),mediasp)
-    plt.title('Ps')
-    plt.subplot(2, 1, 2)
-    plt.scatter(list(range(len(mediasq))),mediasq,c='orange')
-    plt.title('Qs')
-    plt.show()'''
-    if not hasRobots:
-        return (mediap/(100),mediaq/(100))
-    else:
-        return (mediap / (nmedia), mediaq / (nmedia))
+        if neighborIterations==1:
+            m=population.media()  
+            mediasp+=[m[0]]
+            mediasq+=[m[1]]
+            if t>= (iterations-nmedia):
+                mediap += m[0]
+                mediaq += m[1]
+        else:
+            if t>= (iterations-nmedia):
+                m=population.media()  
+                mediap += m[0]
+                mediaq += m[1]
+    if neighborIterations==1:
+        plt.subplot(2, 1, 1)
+        plt.scatter(list(range(len(mediasp))),mediasp)
+        plt.title('Ps')
+        plt.subplot(2, 1, 2)
+        plt.scatter(list(range(len(mediasq))),mediasq,c='orange')
+        plt.title('Qs')
+        plt.show()
+    return (mediap / (nmedia), mediaq / (nmedia))
 
 def main(argv):
     n=101
     e=0.001
-    iterations=800000
-	#Robot Variation
-    if (len(argv) > 1 and argv[1] == '-r'):
-        print("Robot Variation")
-        hasRobots = True
-        neighborIterations = 30
-        robots = int(argv[0])
-        neighbors = 4
-        sub = "_robot"
-	#Standard
-    else:
-        hasRobots = False
-        neighborIterations=1
-        neighbors = int(argv[0])
-        sub = ""
+    iterations=200000
+    robots = 0
+    neighbors= 4
+    neighborIterations=30
+    try:
+        opts,args = getopt.getopt(argv,"n:r:i:")
+    except getopt.GetoptError:
+        print('test.py -n <neighbors> -r <robots> -i <iterations>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt=="-n":
+            neighbors = int(arg)
+        elif opt=="-r":
+            robots = int(arg)
+        elif opt=="-i":
+            neighborIterations=int(arg)
     pm=0
     qm=0
     for i in range(neighborIterations):
-        if hasRobots:
-            print(str(robots)+ "->" + str(i))
-        else:
-            print(str(neighbors)+"->"+str(i))
+        print(str(robots)+","+str(neighbors)+ "->" + str(i))
         population=Population(n,e)
-        #make_graph(population)
-        #print(population.media())
-        if hasRobots:
-            for i in range(robots):
-                population.addRobot(random.random(), random.random())
+        for i in range(robots):
+            population.addRobot(random.random(), random.random())
         population.createNetworkRing(neighbors)
-        t=one_run(population,iterations, hasRobots)
+        t=one_run(population,iterations,neighborIterations)
         pm+=t[0]
         qm+=t[1]
     pm/=neighborIterations
     qm/=neighborIterations
-    nomeFicheiro='neighbor_run_'+ argv[0] + sub
+    nomeFicheiro='ring_run_'+ str(robots) + "_robots_"+str(neighbors)+"_neighbors"
     f=open(nomeFicheiro,'w')
     conteudo=str(pm)+" "+str(qm)
     f.write(conteudo)
     f.close()
-    if hasRobots:
-        print(str(robots) + " acabou")
-    else:
-        print(str(neighbors)+" acabou")
+    print(str(robots)+","+str(neighbors) + " acabou")
     
 if __name__== "__main__":
     main(sys.argv[1:])
