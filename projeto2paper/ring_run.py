@@ -79,7 +79,7 @@ def main(argv):
             e=float(arg)
         elif opt=="-p":
             n=int(arg)
-    iterations*=n/100
+    iterations*=n//100
     print(iterations)
     pm=0
     qm=0
