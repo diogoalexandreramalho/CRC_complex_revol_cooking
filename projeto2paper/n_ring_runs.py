@@ -4,7 +4,7 @@ import os
 import sys
 
 def main():
-    neighbors=[2,4,6,8,10,16,24,32]
+    neighbors=[2]
     robots=[0,10,20,30,40]
     epsilon=[0.001,0.002,0.01,0.02,0.1,0.2]
     population=[100,200,500,1000,2000,4000,8000]

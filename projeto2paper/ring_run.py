@@ -45,7 +45,6 @@ def one_run(population, iterations, neighborIterations):
             lastm=m
         if t==limit[1] and limit[0]:
             break
-    print(t)
     if neighborIterations==1:
         plt.subplot(2, 1, 1)
         plt.plot(list(range(len(mediasp))),mediasp)
