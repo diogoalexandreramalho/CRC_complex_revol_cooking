@@ -5,33 +5,45 @@ from player import Player
 from population import Population
 
 def one_run(population,iterations):
+    m=population.media()
+    n=len(population.population)
     mediasp=[]
     mediasq=[]
     mediap=0
     mediaq=0
+    fitness=[]
     for t in range(iterations):
+        flag=False
         p1=population.randomPlayer()
         p2=population.randomNeighbor(p1)
         f1=population.getFitness(p1)
         f2=population.getFitness(p2)
-        if f2>f1:
-            population.imitate(p1,p2) 
-        m=population.media()   
-        mediasp+=[m[0]]
-        mediasq+=[m[1]]
-        if t>=(iterations-100):
-            mediap+=m[0]
-            mediaq+=m[1]
-    
-    #make_graph(population)
-    plt.scatter(list(range(len(mediasp))),mediasp)
+        if f2>f1 and not p1.isRobot:
+            previous=(p1.p,p1.q)
+            population.imitate(p1,p2)
+            flag=True
+        if flag:
+            m=(m[0]-previous[0]+p1.p,m[1]-previous[1]+p1.q)   
+        mediasp+=[m[0]/n]
+        mediasq+=[m[1]/n]
+        if t>=(iterations-1000):
+            mediap+=m[0]/n
+            mediaq+=m[1]/n
+
+    plt.subplot(2, 1, 1)
+    plt.plot(list(range(len(mediasp))),mediasp)
+    plt.title('Ps')
+    plt.subplot(2, 1, 2)
+    plt.plot(list(range(len(mediasq))),mediasq,c='orange')
+    plt.title('Qs')
     plt.show()
-    return (mediap/(100),mediaq/(100))
+    plt.show()
+    return (mediap/1000,mediaq/1000)
 
 def main():
     n=20
     e=0.001
-    iterations=2*800000
+    iterations=1000000
     neighborIterations=1
     pm=0
     qm=0
