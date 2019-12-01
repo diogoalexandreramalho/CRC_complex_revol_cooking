@@ -45,7 +45,7 @@ def one_run(population, iterations, neighborIterations):
             lastm=m
         if t==limit[1] and limit[0]:
             break
-    m2=population.media()
+    print(t)
     if neighborIterations==1:
         plt.subplot(2, 1, 1)
         plt.plot(list(range(len(mediasp))),mediasp)
@@ -80,7 +80,6 @@ def main(argv):
         elif opt=="-p":
             n=int(arg)
     iterations*=n//100
-    print(iterations)
     pm=0
     qm=0
     varp=[100,-1]
