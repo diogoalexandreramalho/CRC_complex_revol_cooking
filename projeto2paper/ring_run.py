@@ -108,7 +108,7 @@ def main(argv):
     conteudo=str(pm)+" "+str(qm)+" "+str(varp[0])+" "+str(varp[1])+" "+str(varq[0])+" "+str(varq[1])
     f.write(conteudo)
     f.close()
-    print(str(robots)+","+str(neighbors) + " acabou")
+    print(str(n)+","+str(robots)+","+str(neighbors)+","+str(e) + "->" + str(i)+" acabou")
     
 if __name__== "__main__":
     main(sys.argv[1:])
