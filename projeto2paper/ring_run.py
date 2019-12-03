@@ -84,7 +84,7 @@ def main(argv):
             e=float(arg)
         elif opt=="-p":
             n=int(arg)
-
+            iterations=8000000
     pm=0
     qm=0
     varp=[0,0]
