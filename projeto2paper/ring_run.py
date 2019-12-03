@@ -7,16 +7,14 @@ from population import Population
 
 def one_run(population, iterations, neighborIterations):
     m=population.media()
-    lastm=(0,0)
     n=len(population.population)-population.nrobots
     mediasp=[]
     mediasq=[]
     mediap=0
     mediaq=0
-    varp=[100,-1]
-    varq=[100,-1]
+    varp=0
+    varq=0
     nmedia=100000
-    limit=(False,0)
     for t in range(iterations):
         flag=False
         p1=population.randomPlayer()
@@ -29,22 +27,29 @@ def one_run(population, iterations, neighborIterations):
             flag=True
         if flag:
             m=(m[0]-previous[0]+p1.p,m[1]-previous[1]+p1.q)
-        if neighborIterations==1:
-            mediasp+=[m[0]/n]
-            mediasq+=[m[1]/n]
-        if t>=(iterations-nmedia) or limit[0]:
+        mediasp+=[m[0]/n]
+        mediasq+=[m[1]/n]
+        if t>=(iterations-nmedia):
             mediap += m[0]/n
             mediaq += m[1]/n
-            varp[0]=min(varp[0],m[0]/n)
-            varp[1]=max(varp[1],m[0]/n)
-            varq[0]=min(varq[0],m[1]/n)
-            varq[1]=max(varq[1],m[1]/n)
-        if t%100000==0 and limit[0]==False:   
-            if abs(lastm[0]-m[0])<1e-1 and abs(lastm[1]-m[1])<1e-1:
-                limit=(True,t+nmedia+1)
-            lastm=m
-        if t==limit[1] and limit[0]:
-            break
+    mediap=mediap/nmedia
+    mediaq=mediaq/nmedia
+    c=[[0,0],[0,0]]
+    for i in range(iterations-nmedia,iterations):
+        varp+=(mediasp[i]-mediap)**2
+        if mediasp[i]<mediap:
+            c[0][0]+=1
+        else:
+            c[0][1]+=1
+        varq+=(mediasq[i]-mediaq)**2
+        if mediasq[i]<mediaq:
+            c[1][0]+=1
+        else:
+            c[1][1]+=1
+    varp/=(nmedia)
+    varq/=(nmedia)
+    varp=varp**0.5
+    varq=varq**0.5
     if neighborIterations==1:
         plt.subplot(2, 1, 1)
         plt.plot(list(range(len(mediasp))),mediasp)
@@ -53,7 +58,8 @@ def one_run(population, iterations, neighborIterations):
         plt.plot(list(range(len(mediasq))),mediasq,c='orange')
         plt.title('Qs')
         plt.show()
-    return [[mediap/nmedia,varp[0],varp[1]],[mediaq/nmedia,varq[0],varq[1]]]
+    return [[mediap,mediap-(varp*c[0][0]/(c[0][0]+c[0][1])),mediap+(varp*c[0][1]/(c[0][0]+c[0][1]))],
+    [mediaq,mediaq-(varq*c[1][0]/(c[1][0]+c[1][1])),mediaq+(varq*c[1][1]/(c[1][0]+c[1][1]))]]
 
 def main(argv):
     n=100
@@ -78,11 +84,11 @@ def main(argv):
             e=float(arg)
         elif opt=="-p":
             n=int(arg)
-    iterations*=n//100
+
     pm=0
     qm=0
-    varp=[100,-1]
-    varq=[100,-1]
+    varp=[0,0]
+    varq=[0,0]
     for i in range(neighborIterations):
         print(str(n)+","+str(robots)+","+str(neighbors)+","+str(e) + "->" + str(i))
         population=Population(n,e)
@@ -92,14 +98,14 @@ def main(argv):
         t=one_run(population,iterations,neighborIterations)
         pm+=t[0][0]
         qm+=t[1][0]
-        if t[0][1]<varp[0]:
-            varp[0]=t[0][1]
-        if t[0][2]>varp[1]:
-            varp[1]=t[0][2]
-        if t[1][1]<varq[0]:
-            varq[0]=t[1][1]
-        if t[1][2]>varq[1]:
-            varq[1]=t[1][2]
+        varp[0]+=t[0][1]
+        varp[1]+=t[0][2]
+        varq[0]+=t[1][1]
+        varq[1]+=t[1][2]
+    varp[0]/=neighborIterations
+    varp[1]/=neighborIterations
+    varq[0]/=neighborIterations
+    varq[1]/=neighborIterations
     pm/=neighborIterations
     qm/=neighborIterations
     nomeFicheiro='ring_run_'+str(n)+'_population_'+str(robots) + "_robots_"+str(neighbors)+"_neighbors_"+str(e)+"_epsilon"
