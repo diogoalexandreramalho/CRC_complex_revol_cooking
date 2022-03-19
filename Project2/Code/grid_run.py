@@ -18,6 +18,7 @@ def one_run(population,iterations):
         p2=population.randomNeighbor(p1)
         f1=population.getFitness(p1)
         f2=population.getFitness(p2)
+<<<<<<< Updated upstream:projeto2paper/Code/grid_run.py
         if f2>f1 and not p1.isRobot:
             previous=(p1.p,p1.q)
             population.imitate(p1,p2)
@@ -37,6 +38,20 @@ def one_run(population,iterations):
     plt.plot(list(range(len(mediasq))),mediasq,c='orange')
     plt.title('Qs')
     plt.show()
+=======
+        if f2>f1:
+            population.imitate(p1,p2) 
+        m=population.media()   
+        mediasp+=[m[0]]
+        mediasq+=[m[1]]
+        if t>=(iterations-100):
+            mediap+=m[0]
+            mediaq+=m[1]
+        
+    
+    #make_graph(population)
+    plt.scatter(list(range(len(mediasp))),mediasp)
+>>>>>>> Stashed changes:projeto2paper/grid_run.py
     plt.show()
     return (mediap/1000,mediaq/1000)
 

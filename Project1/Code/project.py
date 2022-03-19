@@ -8,7 +8,7 @@ import powerlaw
 
 #TODO: Make graph creation optional
 
-data=pd.read_csv("BAAD.csv",sep=',',index_col=0)
+data=pd.read_csv("../Data/BAAD.csv",sep=',',index_col=0)
 graph = nx.Graph()
 dic={}
 c=0
@@ -34,7 +34,7 @@ for country in data:
             n1=dic[edge[0]]
             n2=dic[edge[1]]
             graph.add_edge(n1,n2,attr=country)
-nx.write_gexf(graph, "graph.gexf")
+nx.write_gexf(graph, "../Graphs/graph.gexf")
 
 
 
