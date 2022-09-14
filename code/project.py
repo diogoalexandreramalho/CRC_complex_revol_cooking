@@ -8,7 +8,7 @@ import powerlaw
 
 #TODO: Make graph creation optional
 
-data=pd.read_csv("../Data/BAAD.csv",sep=',',index_col=0)
+data=pd.read_csv("./data/BAAD.csv",sep=',',index_col=0)
 graph = nx.Graph()
 dic={}
 c=0
